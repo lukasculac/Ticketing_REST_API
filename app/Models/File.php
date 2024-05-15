@@ -9,8 +9,17 @@ class File extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'file_name'
+    ];
+
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
+    }
+
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class);
     }
 }

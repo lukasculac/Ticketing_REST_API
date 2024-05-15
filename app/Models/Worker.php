@@ -9,7 +9,18 @@ class Worker extends Model
 {
     use HasFactory;
 
-    public function ticket(){
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'position',
+        ];
+
+    public function tickets(){
         return $this->hasMany(Ticket::class);
+    }
+
+    public function files(){
+        return $this->hasMany(File::class);
     }
 }

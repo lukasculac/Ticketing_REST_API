@@ -21,8 +21,10 @@ class TicketResource extends JsonResource
             'message' => $this->message,
             'status' => $this->status,
             'priority' => $this->priority,
+            'createdAt' => $this->created_at->format('Y-m-d H:i:s'),
             'openedAt' => $this->opened_at,
             'closedAt' => $this->closed_at,
+            'files' => FileResource::collection($this->whenLoaded('files'))
         ];
     }
 }

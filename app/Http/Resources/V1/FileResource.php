@@ -18,6 +18,7 @@ class FileResource extends JsonResource
             'id' => $this->id,
             'ticketId' => $this->ticket_id,
             'fileName' => $this->file_name,
+
         ];
     }
 }

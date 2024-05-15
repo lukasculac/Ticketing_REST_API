@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\File;
 use App\Models\Ticket;
+use App\Models\Worker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,7 @@ class FileFactory extends Factory
     {
         return [
             'ticket_id' => Ticket::factory(),
+            'worker_id' => Worker::factory(),
             'file_name' => $this->faker->word,
         ];
     }

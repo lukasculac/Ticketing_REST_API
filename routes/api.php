@@ -12,9 +12,11 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], function () {
+Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1', 'middleware'=> 'auth:sanctum'], function () {
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('workers', WorkerController::class);
     Route::apiResource('files', FileController::class);
+
+    Route::post('tickets/bulk', [WorkerController::class, 'bulkStore']);
 });
 

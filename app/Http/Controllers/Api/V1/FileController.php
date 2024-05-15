@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Filters\V1\FilesFIlter;
-use App\Filters\V1\WorkersFIlter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreFileRequest;
-use App\Http\Requests\UpdateFileRequest;
+use App\Http\Requests\V1\StoreFileRequest;
+use App\Http\Requests\V1\UpdateFileRequest;
 use App\Http\Resources\V1\FileCollection;
 use App\Http\Resources\V1\FileResource;
-use App\Http\Resources\V1\WorkerCollection;
 use App\Models\File;
-use App\Models\Worker;
 use Illuminate\Http\Request;
 
 class FileController extends Controller

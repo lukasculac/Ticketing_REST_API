@@ -18,9 +18,9 @@ class WorkerResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'position' => $this->position,
             'phone' => $this->phone,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'tickets' => TicketResource::collection($this->whenLoaded('tickets')),
         ];
     }
 }

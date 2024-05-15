@@ -9,11 +9,21 @@ class Ticket extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'worker_id',
+        'department',
+        'message',
+        'status',
+        'priority',
+        'opened_at',
+        'closed_at',
+    ];
+
     public function worker(){
         return $this->belongsTo(Worker::class);
     }
 
-    public function file()
+    public function files()
     {
         return $this->hasMany(File::class);
     }

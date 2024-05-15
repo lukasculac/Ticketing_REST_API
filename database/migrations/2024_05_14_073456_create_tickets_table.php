@@ -16,10 +16,10 @@ return new class extends Migration
             $table->integer('worker_id');
             $table->string('department');
             $table->string('message');
-            $table->string('status'); // pending, opened, in_progress,  closed
-            $table->string('priority'); // low, medium, high
-            $table->dateTime('opened_at')->nullable();
-            $table->dateTime('closed_at')->nullable();
+            $table->string('status')->default('pending'); // pending, opened, in_progress,  closed
+            $table->string('priority')->default('low'); // low, medium, high
+            $table->dateTime('opened_at')->nullable()->default(null);
+            $table->dateTime('closed_at')->nullable()->default(null);
             $table->timestamps();
         });
     }

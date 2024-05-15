@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Filters\V1\TicketsFIlter;
-use App\Filters\V1\WorkersFIlter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTicketRequest;
-use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Requests\V1\StoreTicketRequest;
+use App\Http\Requests\V1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketCollection;
 use App\Http\Resources\V1\TicketResource;
-use App\Http\Resources\V1\WorkerCollection;
 use App\Models\Ticket;
-use App\Models\Worker;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -22,13 +19,14 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $filter = new TicketsFilter();
-        $queryItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        if (count($queryItems) == 0) {
-            return new TicketCollection (Ticket::paginate());
-        } else {
-            $workers = Ticket::where($queryItems)->paginate();
-            return new TicketCollection ($workers->appends($request->query()));
+        $filterItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $includeFiles = $request->query('includeFiles');
+        $tickets = Ticket::where($filterItems);
+
+        if($includeFiles){
+            $tickets = $tickets->with('files');
         }
+        return new TicketCollection($tickets->paginate()->appends($request->query()));
     }
 
     /**
@@ -52,6 +50,10 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
+        $includeFiles = request()->query('includeFiles');
+        if($includeFiles){
+            return new TicketResource($ticket->loadMissing('files'));
+        }
         return new TicketResource($ticket);
     }
 
