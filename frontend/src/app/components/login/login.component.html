@@ -1,0 +1,33 @@
+<div class="login-container">
+  <p>Login as:</p>
+  <div class="user-type-container">
+    <button class="user-type-button" [class.active]="userType === 'worker'" (click)="switchUserType('worker')">Worker</button>
+    <button class="user-type-button" [class.active]="userType === 'agent'" (click)="switchUserType('agent')">Agent</button>
+  </div>
+
+  <form *ngIf="userType === 'worker'" (ngSubmit)="onSubmit()" class="login-form">
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="user.email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="user.password" name="password" required>
+
+    <div class="button-container">
+      <button type="submit" class="login-button">Login</button>
+      <button (click)="navigateToRegister()" class="register-button">Register</button>
+    </div>
+  </form>
+
+  <form *ngIf="userType === 'agent'" (ngSubmit)="onSubmit()" class="login-form">
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="user.email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="user.password" name="password" required>
+
+    <div class="button-container">
+      <button type="submit" class="login-button">Login</button>
+      <button (click)="navigateToRegister()" class="register-button">Register</button>
+    </div>
+  </form>
+</div>
