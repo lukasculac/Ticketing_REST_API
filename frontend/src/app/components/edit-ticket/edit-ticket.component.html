@@ -24,7 +24,8 @@
     <label>Current Files:</label>
     <div *ngFor="let file of ticket.files">
       <span>{{ file.fileName }}</span>
-      <button type="button" (click)="deleteFile(file.id)" class="delete_button">Delete</button>    </div>
+      <img src="assets/icons8-delete-48.png" alt="Delete" (click)="deleteFile(file.id)" class="delete_icon">
+    </div>
   </div>
 
   <button type="submit" class="submit-button">Update Ticket</button>

@@ -60,8 +60,14 @@
   color: #ffffff;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 5px 20px; /* Reduced the vertical padding from 10px to 5px */
   cursor: pointer;
-  onHover: background-color 0.3s;
-  height: 30px;
+  transition: background-color 0.3s;
+}
+
+.delete_icon {
+  width: 37px; /* Adjust as needed */
+  height: 25px; /* Adjust as needed */
+  cursor: pointer;
+  padding-left: 10px;
 }

@@ -28,6 +28,9 @@
       <th>Department</th>
       <th>Message</th>
       <th>Files</th>
+      <th>Status</th>
+      <th>Opened at</th>
+      <th>Closed at</th>
       <th></th>
     </tr>
     </thead>
@@ -41,9 +44,13 @@
           <li *ngFor="let file of ticket.files">{{file.fileName}}</li>
         </ul>
       </td>
+      <td>{{ticket.status}}</td>
+      <td *ngIf="ticket.opened_at; else noDate">{{ticket.opened_at}}</td>
+      <td *ngIf="ticket.closed_at; else noDate">{{ticket.closed_at}}</td>
       <td><button (click)="editTicket(ticket.id)" class="edit_button">Edit</button></td>
       <td><button (click)="deleteTicket(ticket.id)" class="delete_button">Delete</button></td>
     </tr>
+    <ng-template #noDate><td><i>No Date</i></td></ng-template>
     </tbody>
   </table>
 
