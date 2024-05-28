@@ -19,6 +19,7 @@ class Worker extends Model implements AuthenticatableContract
         'password',
         'phone',
         'position',
+        'api_token'
         ];
     protected $hidden = [
         'password',

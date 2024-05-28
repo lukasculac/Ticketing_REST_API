@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('position');
             $table->string('phone');
+            $table->string('api_token')->nullable();
             $table->timestamps();
         });
     }

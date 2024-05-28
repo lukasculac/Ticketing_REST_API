@@ -21,23 +21,16 @@ class WorkerController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
-        $filter = new WorkersFilter();
-        $filterItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $includeTickets = $request->query('includeTickets');
-        $includeFiles = $request->query('includeFiles');
-        $workers = Worker::where($filterItems);
-
-        if($includeTickets){
-            $workers = $workers->with('tickets');
+        $worker = auth('sanctum')->user();
+        if (!$worker) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
         }
-        if($includeFiles){
-            $workers = $workers->with('tickets.files');
-        }
-        return new WorkerCollection($workers->paginate()->appends($request->query()));
 
-
+        $worker->load('tickets.files');
+        return new WorkerResource($worker);
     }
 
     /**
@@ -72,7 +65,6 @@ class WorkerController extends Controller
      */
     public function show(Worker $worker)
     {
-        // Get the currently authenticated worker
         $authenticatedWorker = auth()->guard('worker')->user();
 
         // Check if there is an authenticated worker
@@ -81,7 +73,6 @@ class WorkerController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        // Check if the authenticated worker is the same as the worker being accessed
         if ($authenticatedWorker->id !== $worker->id) {
             // If not, return a 403 Forbidden response
             return response()->json(['message' => 'This action is unauthorized.'], 403);

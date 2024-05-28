@@ -32,8 +32,7 @@ export class LoginComponent {
         if (token) {
           this.authService.setToken(token); // store the token in local storage
           //console.log('Token retrieved:', token);
-
-          localStorage.setItem('jwt', token);
+          localStorage.setItem('token', token);
 
           this.router.navigate(['/worker']).then(() => {
             console.log('Navigation to /workers successful');

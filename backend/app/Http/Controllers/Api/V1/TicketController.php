@@ -12,18 +12,43 @@ use App\Models\File;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    /*
     public function index(Request $request)
     {
         $filter = new TicketsFilter();
         $filterItems = $filter->transform($request); //[['column', 'operator', 'value']]
         $includeFiles = $request->query('includeFiles');
         $tickets = Ticket::where($filterItems);
+
+        if($includeFiles){
+            $tickets = $tickets->with('files');
+        }
+        return new TicketCollection($tickets->paginate()->appends($request->query()));
+    }
+    */
+    public function index(Request $request)
+    {
+        // Get the currently authenticated worker
+        $worker = auth('sanctum')->user();
+
+        if (!$worker) {
+            // If not, return a 401 Unauthorized response
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $filter = new TicketsFilter();
+        $filterItems = $filter->transform($request); //[['column', 'operator', 'value']]
+        $includeFiles = $request->query('includeFiles');
+
+        // Filter the tickets based on the authenticated worker's ID
+        $tickets = Ticket::where('worker_id', $worker->id)->where($filterItems);
 
         if($includeFiles){
             $tickets = $tickets->with('files');
@@ -45,7 +70,7 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         // Get the currently authenticated worker
-        $worker = auth('worker')->user();
+        $worker = auth('sanctum')->user();
         //log::info($request);
 
         if (!$worker) {
@@ -59,6 +84,7 @@ class TicketController extends Controller
             'files.*' => 'file'
         ]);
 
+
         // Create a new ticket and associate it with the worker
         $ticket = new Ticket;
         $ticket->department = $request->department;
@@ -66,15 +92,18 @@ class TicketController extends Controller
         $ticket->worker_id = $worker->id;
         $ticket->save();
 
+        $ticket->refresh();
+
         // Check if there are any files in the request
         if ($request->has('files')) {
             foreach ($request->file('files') as $file) {
                 // Store the file and get its path
-                $originalName = $file->getClientOriginalName();
+                $originalName = $file->getClientOriginalName() . '_' . $ticket->id;
                 $path = $file->storeAs('files', $originalName);
 
                 // Create a new file record and associate it with the ticket and the worker
                 $fileRecord = new File;
+                $fileRecord->file_name = $originalName;
                 $fileRecord->path = $path;
                 $fileRecord->ticket_id = $ticket->id;
                 $fileRecord->worker_id = $worker->id;
@@ -108,16 +137,53 @@ class TicketController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(Request $request, Ticket $ticket)
     {
-        //
+        Log::info($request);
+        // Validate the request data
+        $validatedData = $request->validate([
+            'department' => 'required|string',
+            'message' => 'required|string',
+            'files.*' => 'file'
+        ]);
+        $ticket->update($validatedData);
+
+
+        if ($request->has('files')) {
+            foreach ($request->file('files') as $file) {
+                // Store the file and get its path
+                $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                $originalName = $filename . '_' . $ticket->id . '.' . $extension;
+                $path = $file->storeAs('files', $originalName);
+
+                // Check if file already exists in the database
+                if (!File::where('file_name', $originalName)->exists()) {
+                    // Create a new file record and associate it with the ticket
+                    $fileRecord = new File;
+                    $fileRecord->file_name = $originalName;
+                    $fileRecord->path = $path;
+                    $fileRecord->ticket_id = $ticket->id;
+                    $fileRecord->worker_id = $ticket->worker_id;
+                    $fileRecord->save();
+                }
+            }
+        }
+
+        return new TicketResource($ticket);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Ticket $ticket)
     {
+        foreach ($ticket->files as $file) {
+            $file->delete();
+            Storage::delete($file->path);
+        }
+
         $ticket->delete();
 
         return response()->json(null, 204);

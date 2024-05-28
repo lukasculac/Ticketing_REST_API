@@ -2,18 +2,21 @@ import { Component , ViewChild} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-ticket',
   templateUrl: './create-ticket.component.html',
   styleUrls: ['./create-ticket.component.css']
 })
+
+
 export class CreateTicketComponent {
   @ViewChild('ticketForm') ticketForm!: NgForm;
   department!: string;
   message!: string;
   files!: FileList;
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService,private router: Router) {}
 
   submitTicket(): void {
     const url = 'http://localhost/api/v1/store_ticket';
@@ -23,16 +26,18 @@ export class CreateTicketComponent {
     formData.append('message', this.message);
 
     // Append each file to the form data
-    for (let i = 0; i < this.files.length; i++) {
-      formData.append('files[]', this.files[i]);
+    if (this.files) {
+      for (let i = 0; i < this.files.length; i++) {
+        formData.append('files[]', this.files[i]);
+      }
     }
 
-    console.log(formData); // Should now log the form data
+
     //const token = this.authService.getToken();
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem('token');
     console.log(token);
     const headers = { 'Authorization': `Bearer ${token}` , 'Accept': 'application/json' };
-
+    console.log(formData);
     this.http.post(url, formData, { headers }).subscribe(response => {
       //console.log(response);  //output the post request the ticket contains
       // Handle response here
@@ -40,6 +45,7 @@ export class CreateTicketComponent {
       console.error(error);
       // Handle error here
     });
+    this.router.navigate(['/worker']);
   }
 
   onFileChange(event: any): void {

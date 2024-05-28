@@ -17,7 +17,7 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        if($request->user_type == 'worker'){
+        if ($request->user_type == 'worker') {
             $worker = new Worker;
             $worker->name = $request->name;
             $worker->email = $request->email;
@@ -27,8 +27,7 @@ class AuthController extends Controller
             $worker->save();
 
             return new WorkerResource($worker);
-        }
-        elseif($request->user_type == 'agent'){
+        } elseif ($request->user_type == 'agent') {
             $agent = new Agent;
             $agent->name = $request->name;
             $agent->email = $request->email;
@@ -41,9 +40,32 @@ class AuthController extends Controller
         }
     }
 
+
     public function login(Request $request)
     {
-        log::info("here");
+        $credentials = $request->only('email', 'password');
+        $guard = $request->user_type; // 'worker' or 'agent'
+
+        // Retrieve the user from the database
+        $userModel = $guard == 'worker' ? Worker::class : Agent::class;
+        $user = $userModel::where('email', $request->email)->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            Log::info('Password is correct');
+
+            // Manually generate a token
+            $token = $user->createToken($guard . '_token')->plainTextToken;
+
+            return response()->json([
+                'token' => $token,
+                'message' => 'Logged in successfully'
+            ]);
+        }
+
+        return response()->json(['message' => 'Invalid credentials'], 401);
+
+
+        /*
         if($request->user_type == 'worker'){
             if(!Auth::guard('worker')->attempt($request->only('email', 'password'))){
                 return response([
@@ -76,30 +98,37 @@ class AuthController extends Controller
             $token = $user->createToken('agent_token')->plainTextToken;
             return $token;
         }
+        */
     }
 
-    public function worker(){
+    public function worker()
+    {
         return Auth::guard('worker')->user();
     }
 
-    public function agent(){
+    public function agent()
+    {
         return Auth::guard('agent')->user();
     }
 
     public function logout(Request $request)
     {
-        $cookie = cookie('jwt', '', -1);
+        $guard = $request->user_type;
+        $user = null;
 
-        if($request->user_type == 'worker'){
-            Auth::guard('worker')->user()->tokens()->delete();
-        }
-        elseif($request->user_type == 'agent'){
-            Auth::guard('agent')->user()->tokens()->delete();
+        if ($guard == 'worker') {
+            $user = Auth::guard('sanctum')->user();
+        } elseif ($guard == 'agent') {
+            $user = Auth::guard('sanctum')->user();
+        } else {
+            return response()->json(['message' => 'Invalid user type'], 400);
         }
 
-        return response([
-            'message' => 'success'
-        ])->withCookie($cookie);
+        if ($user) {
+            $user->tokens()->delete();
+            return response()->json(['message' => 'Logged out successfully']);
+        }
+
+        return response()->json(['message' => 'Not authenticated'], 401);
     }
-
 }

@@ -40,19 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
-        ],
+
 
         'worker' => [
-            'driver' => 'session',
-            'provider' => 'workers',
+            'driver' => 'sanctum',
+            'provider' => 'worker',
         ],
 
         'agent' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'agents',
         ],
     ],
@@ -80,7 +76,7 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-        'workers' => [
+        'worker' => [
             'driver' => 'eloquent',
             'model' => App\Models\Worker::class,
         ],

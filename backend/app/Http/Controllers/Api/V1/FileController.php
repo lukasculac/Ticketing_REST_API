@@ -10,6 +10,7 @@ use App\Http\Resources\V1\FileCollection;
 use App\Http\Resources\V1\FileResource;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -72,6 +73,8 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        //
+        Storage::delete($file->path);
+        $file->delete();
+        return response()->json(null, 204);
     }
 }
