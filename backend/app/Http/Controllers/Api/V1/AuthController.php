@@ -27,17 +27,8 @@ class AuthController extends Controller
             $worker->save();
 
             return new WorkerResource($worker);
-        } elseif ($request->user_type == 'agent') {
-            $agent = new Agent;
-            $agent->name = $request->name;
-            $agent->email = $request->email;
-            $agent->password = Hash::make($request->password);
-            $agent->position = $request->position;
-            $agent->phone = $request->phone;
-            $agent->save();
-
-            return new AgentResource($agent);
         }
+        return null;
     }
 
 
@@ -51,9 +42,8 @@ class AuthController extends Controller
         $user = $userModel::where('email', $request->email)->first();
 
         if ($user && Hash::check($request->password, $user->password)) {
-            Log::info('Password is correct');
 
-            // Manually generate a token
+            //generate a token
             $token = $user->createToken($guard . '_token')->plainTextToken;
 
             return response()->json([
@@ -61,44 +51,7 @@ class AuthController extends Controller
                 'message' => 'Logged in successfully'
             ]);
         }
-
         return response()->json(['message' => 'Invalid credentials'], 401);
-
-
-        /*
-        if($request->user_type == 'worker'){
-            if(!Auth::guard('worker')->attempt($request->only('email', 'password'))){
-                return response([
-                    'message' => 'Invalid credentials!'
-                ], Response::HTTP_UNAUTHORIZED);
-            }
-
-            $user = Auth::guard('worker')->user();
-
-            $token = $user->createToken('worker_token')->plainTextToken;
-            Log::info('Token: ' . $token);
-
-            $cookie = cookie('jwt', $token, 60*24, null, null, false, false); // 1 day // 1 day
-
-            return response([
-                'message' => 'success',
-                'token' => $token
-            ])->withCookie($cookie);
-
-        }
-        elseif($request->user_type == 'agent'){
-            if(!Auth::guard('agent')->attempt($request->only('email', 'password'))){
-                return response([
-                    'message' => 'Invalid credentials!'
-                ], Response::HTTP_UNAUTHORIZED);
-            }
-
-            $user = Auth::guard('agent')->user();
-
-            $token = $user->createToken('agent_token')->plainTextToken;
-            return $token;
-        }
-        */
     }
 
     public function worker()

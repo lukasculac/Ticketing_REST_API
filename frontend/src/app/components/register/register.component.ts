@@ -19,17 +19,13 @@ export class RegisterComponent {
       alert('Passwords do not match!');
       return;
     }
-
-    if (this.userType === 'worker') {
-      this.registerWorker();
-    } else if (this.userType === 'agent') {
-      this.registerAgent();
-    }
+    this.registerWorker();
   }
 
   registerWorker(): void {
     this.user.user_type = 'worker';
     console.log('Registering as worker:', this.user);
+    console.log(this.user);
     this.http.post('http://localhost/api/v1/register', this.user).subscribe(
       data => {
         console.log(data);
@@ -37,20 +33,5 @@ export class RegisterComponent {
       },
       error => console.error(error)
     );
-  }
-
-  registerAgent(): void {
-    this.user.user_type = 'agent';
-    this.http.post('http://localhost/api/v1/register', this.user).subscribe(
-      data => {
-        console.log(data);
-        this.router.navigate(['/login']); // Navigate to login page
-      },
-      error => console.error(error)
-    );
-  }
-
-  switchUserType(type: string) {
-    this.userType = type;
   }
 }

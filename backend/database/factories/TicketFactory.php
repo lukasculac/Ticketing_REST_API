@@ -23,7 +23,7 @@ class TicketFactory extends Factory
 
         return [
             'worker_id' => Worker::factory(),
-            'department' => $this->faker->randomElement(['IT', 'HR', 'Finance', 'Marketing']),
+            'department' => $this->faker->randomElement(['IT', 'HR', 'Finance', 'Marketing', 'Sales']),
             'message' => $this->faker->sentence,
             'status' => $status,
             'priority' => $this->faker->randomElement(['low', 'medium', 'high']),

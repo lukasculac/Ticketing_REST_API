@@ -23,6 +23,7 @@ class WorkerFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'position' => $this->faker->jobTitle,
             'phone' => $this->faker->phoneNumber,
+            'password' => bcrypt('password'),
         ];
     }
 }

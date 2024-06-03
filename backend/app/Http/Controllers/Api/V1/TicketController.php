@@ -19,20 +19,7 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    /*
-    public function index(Request $request)
-    {
-        $filter = new TicketsFilter();
-        $filterItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $includeFiles = $request->query('includeFiles');
-        $tickets = Ticket::where($filterItems);
 
-        if($includeFiles){
-            $tickets = $tickets->with('files');
-        }
-        return new TicketCollection($tickets->paginate()->appends($request->query()));
-    }
-    */
     public function index(Request $request)
     {
         // Get the currently authenticated worker
@@ -97,8 +84,8 @@ class TicketController extends Controller
         // Check if there are any files in the request
         if ($request->has('files')) {
             foreach ($request->file('files') as $file) {
-                // Store the file and get its path
-                $originalName = $file->getClientOriginalName() . '_' . $ticket->id;
+                $extension = $file->extension();
+                $originalName = $file->getClientOriginalName() . '_' . $ticket->id . '.' . $extension;
                 $path = $file->storeAs('files', $originalName);
 
                 // Create a new file record and associate it with the ticket and the worker
@@ -110,10 +97,10 @@ class TicketController extends Controller
                 $fileRecord->save();
             }
         }
-
-        // Return a response with the newly created ticket and its associated files
         return new TicketResource($ticket->load('files'));
     }
+
+
     /**
      * Display the specified resource.
      */

@@ -24,6 +24,7 @@ class FileFactory extends Factory
             'ticket_id' => Ticket::factory(),
             'worker_id' => Worker::factory(),
             'file_name' => $this->faker->word,
+            'path' => $this->faker->word,
         ];
     }
 }

@@ -15,6 +15,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { EditTicketComponent } from './components/edit-ticket/edit-ticket.component';
+import { AgentComponent } from './components/agent/agent.component';
 
 library.add(faEdit, faTrashAlt);
 
@@ -29,7 +30,8 @@ const appRoutes: Routes = [
     RegisterComponent,
     WorkerComponent,
     CreateTicketComponent,
-    EditTicketComponent
+    EditTicketComponent,
+    AgentComponent
   ],
   imports: [
     BrowserModule,

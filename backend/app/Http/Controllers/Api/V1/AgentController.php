@@ -9,7 +9,9 @@ use App\Http\Requests\V1\StoreAgentRequest;
 use App\Http\Requests\V1\UpdateAgentRequest;
 use App\Http\Resources\V1\AgentCollection;
 use App\Http\Resources\V1\AgentResource;
+use App\Http\Resources\V1\WorkerCollection;
 use App\Models\Agent;
+use App\Models\Worker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -21,12 +23,17 @@ class AgentController extends Controller
      */
     public function index(Request $request)
     {
-        $filter = new AgentsFilter();
-        $filterItems = $filter->transform($request); //[['column', 'operator', 'value']]
-        $agents = Agent::where($filterItems);
+        $agent = auth('sanctum')->user();
+        if (!$agent) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
 
+        $workers = Worker::with('tickets.files')->get();
 
-        return new AgentCollection($agents->paginate()->appends($request->query()));
+        return response()->json([
+            'agent' => new AgentResource($agent),
+            'workers' => new WorkerCollection($workers)
+        ]);
     }
 
     /**

@@ -20,8 +20,9 @@ class AgentFactory extends Factory
 
         return [
             'name' => $this->faker->name,
-            'department' => $this->faker->randomElement(['IT', 'HR', 'Finance', 'Marketing']),
-
+            'email' => $this->faker->unique()->safeEmail,
+            'department' => $this->faker->randomElement(['IT', 'HR', 'Finance', 'Marketing', 'Sales']),
+            'password' => bcrypt('password'),
         ];
     }
 }
