@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('worker_id');
             $table->string('department');
             $table->string('message');
+            $table->string('response')->nullable()->default(null);
             $table->string('status')->default('pending'); // pending, opened, in_progress,  closed
             $table->string('priority')->default('low'); // low, medium, high
             $table->dateTime('opened_at')->nullable()->default(null);

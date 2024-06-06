@@ -39,7 +39,9 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', true),
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -65,8 +67,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
-
+    'timezone' => 'Europe/Paris',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

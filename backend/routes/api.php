@@ -18,6 +18,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/store_ticket', [TicketController::class, 'store']);
 });
 Route::post('v1/edit_ticket/{ticket}', [TicketController::class, 'update']);
+Route::post('v1/edit_ticket/{ticket}/response', [TicketController::class, 'submitResponse']);
+Route::post('v1/handleTicketStatus/{ticket}', [TicketController::class, 'handleTicketState']);
 
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], function () {

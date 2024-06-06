@@ -29,6 +29,7 @@
       <th>Message</th>
       <th>Files</th>
       <th>Status</th>
+      <th>Response</th>
       <th>Opened at</th>
       <th>Closed at</th>
       <th></th>
@@ -45,12 +46,14 @@
         </ul>
       </td>
       <td>{{ticket.status}}</td>
-      <td *ngIf="ticket.opened_at; else noDate">{{ticket.opened_at}}</td>
-      <td *ngIf="ticket.closed_at; else noDate">{{ticket.closed_at}}</td>
+      <td *ngIf="ticket.response !== null; else noResponse">{{ticket.response}}</td>
+      <td *ngIf="ticket.openedAt; else noDate">{{ticket.openedAt}}</td>
+      <td *ngIf="ticket.closedAt; else noDate">{{ticket.closedAt}}</td>
       <td><button (click)="editTicket(ticket.id)" class="edit_button">Edit</button></td>
       <td><button (click)="deleteTicket(ticket.id)" class="delete_button">Delete</button></td>
     </tr>
     <ng-template #noDate><td><i>No Date</i></td></ng-template>
+    <ng-template #noResponse><td><i>No Response</i></td></ng-template>
     </tbody>
   </table>
 

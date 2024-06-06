@@ -18,6 +18,12 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         if ($request->user_type == 'worker') {
+            //check if user exists
+            $existingWorker = Worker::where('email', $request->email)->first();
+            if ($existingWorker) {
+                return response()->json(['message' => 'A worker with this email already exists.'], 409);
+            }
+
             $worker = new Worker;
             $worker->name = $request->name;
             $worker->email = $request->email;
@@ -34,15 +40,15 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
         $guard = $request->user_type; // 'worker' or 'agent'
-
         // Retrieve the user from the database
         $userModel = $guard == 'worker' ? Worker::class : Agent::class;
         $user = $userModel::where('email', $request->email)->first();
+        if(!$user){
+            return response()->json(['message' => 'No user found. Please register!'], 401); //user doesnt exist
+        }
 
         if ($user && Hash::check($request->password, $user->password)) {
-
             //generate a token
             $token = $user->createToken($guard . '_token')->plainTextToken;
 
@@ -51,7 +57,7 @@ class AuthController extends Controller
                 'message' => 'Logged in successfully'
             ]);
         }
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return response()->json(['message' => 'Invalid credentials'], 401); //wrong password
     }
 
     public function worker()
@@ -67,7 +73,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $guard = $request->user_type;
-        $user = null;
 
         if ($guard == 'worker') {
             $user = Auth::guard('sanctum')->user();

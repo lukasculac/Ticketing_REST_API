@@ -139,6 +139,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/clock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/jwt" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tymon/jwt-auth" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/barryvdh/laravel-debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/brianium/paratest" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/carbonphp/carbon-doctrine-types" />
@@ -174,6 +175,7 @@
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/league/flysystem" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/league/flysystem-local" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/league/mime-type-detection" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/maximebf/debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/mockery/mockery" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/monolog/monolog" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/myclabs/deep-copy" />

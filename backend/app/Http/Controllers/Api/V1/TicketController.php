@@ -11,6 +11,7 @@ use App\Http\Resources\V1\TicketResource;
 use App\Models\File;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -126,7 +127,6 @@ class TicketController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        Log::info($request);
         // Validate the request data
         $validatedData = $request->validate([
             'department' => 'required|string',
@@ -156,10 +156,58 @@ class TicketController extends Controller
                 }
             }
         }
-
         return new TicketResource($ticket);
     }
 
+    public function submitResponse(Request $request, Ticket $ticket){
+        $validatedData = $request->validate([
+            'response' => 'required|string',
+        ]);
+        $validatedData['status'] = 'closed';
+        $validatedData['closed_at'] = now();
+        $ticket->update($validatedData);
+        return new TicketResource($ticket);
+    }
+
+    public function handleTicketState(Request $request, Ticket $ticket){
+        $validatedData = $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        if($ticket->status === 'pending'){
+            if($validatedData['status'] === 'opened'){
+                $validatedData['opened_at'] = now();
+                $ticket->update($validatedData);
+            }
+        }
+        return new TicketResource($ticket);
+    }
+
+    public function updateTicketPriorities()
+    {
+        // Get all tickets
+        $tickets = Ticket::all();
+
+        // Get the current time
+        $now = now();
+
+        foreach ($tickets as $ticket) {
+            // Calculate the difference in minutes between the current time and the ticket's creation time
+            $minutesSinceCreation = ($ticket->created_at)->diffInMinutes($now);
+            Log::info($ticket->created_at );
+            Log::info($now );
+            Log::info($minutesSinceCreation);
+            // Update the ticket's priority based on the time elapsed since its creation
+            if ($minutesSinceCreation >= 10) {
+                $ticket->priority = 'high';
+            } elseif ($minutesSinceCreation >= 5) {
+                $ticket->priority = 'medium';
+            }
+
+            // Save the updated ticket
+            $ticket->save();
+        }
+    }
 
     /**
      * Remove the specified resource from storage.

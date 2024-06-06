@@ -275,6 +275,8 @@
       <path value="$PROJECT_DIR$/backend/vendor/phpdocumentor/reflection-docblock" />
       <path value="$PROJECT_DIR$/backend/vendor/graham-campbell/result-type" />
       <path value="$PROJECT_DIR$/backend/vendor/composer" />
+      <path value="$PROJECT_DIR$/backend/vendor/maximebf/debugbar" />
+      <path value="$PROJECT_DIR$/backend/vendor/barryvdh/laravel-debugbar" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

@@ -19,6 +19,7 @@ class TicketResource extends JsonResource
             'workerId' => $this->worker_id,
             'department' => $this->department,
             'message' => $this->message,
+            'response' => $this->response,
             'status' => $this->status,
             'priority' => $this->priority,
             'createdAt' => $this->created_at->format('Y-m-d H:i:s'),

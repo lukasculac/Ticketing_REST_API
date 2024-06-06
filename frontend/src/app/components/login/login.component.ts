@@ -15,35 +15,32 @@ export class LoginComponent {
   constructor(private http: HttpClient, private router: Router,private authService: AuthService) { }
 
   onSubmit(): void {
+    if(!this.user.email || !this.user.password) {
+      alert('Please fill all the required fields!');
+      return;
+    }
+
     if (this.userType === 'worker') {
-      this.loginWorker();
+      this.login('worker');
     } else if (this.userType === 'agent') {
-      this.loginAgent();
+      this.login('agent');
     }
   }
 
-  loginWorker(): void {
-    this.login('worker');
-  }
-
-  loginAgent(): void {
-    this.login('agent');
-  }
 
   login(userType: string): void {
     this.user.user_type = userType;
-    console.log(`Logging in as ${userType}:`, this.user);
+    //console.log(`Logging in as ${userType}:`, this.user);
     this.http.post('http://localhost/api/v1/login', this.user).subscribe(
       (res: any) => {
         const token = res.token;
-        console.log(token);
         if (token) {
-          this.authService.setToken(token); // store the token in local storage
+          //save token in local storage
+          this.authService.setToken(token);
           localStorage.setItem('token', token);
 
           this.router.navigate([`/${userType}`]).then(() => {
-            console.log(`Navigation to /${userType} successful`);
-
+            //console.log(`Navigation to /${userType} successful`);
             this.http.get(`http://localhost/api/v1/${userType}s`, { headers: { 'Authorization': `Bearer ${token}` } }).subscribe(
               data => console.log(data),
               error => console.error(`Error fetching ${userType} data:`, error)
@@ -53,14 +50,21 @@ export class LoginComponent {
           console.error('No token retrieved');
         }
       },
-      error => console.error('Error logging in:', error)
+      error => {
+        console.error('Error logging in:', error);
+        if (error.status === 401) { //No user exists with the given email
+          alert(error.error.message);
+        }
+      }
     )
   }
 
+  //switch user type(worker/agent)
   switchUserType(type: string) {
     this.userType = type;
   }
 
+  //register button click
   navigateToRegister() {
     this.router.navigate(['/register']);
   }

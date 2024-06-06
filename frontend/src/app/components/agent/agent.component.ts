@@ -18,38 +18,43 @@ interface ServerResponse {
 export class AgentComponent implements OnInit{
   user:any;
   agentData: any;
-  workerData: any;
   sortedTicketsByDepartment: any = {};
   departments: string[] = [];
   visibility: any = {};
-
-
 
   constructor(private http: HttpClient, private router: Router, private authService: AuthService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      // When a NavigationEnd event occurs, fetch the worker data
       this.fetchAgentData();
     });
   }
 
   ngOnInit(): void {
-    //this.fetchAgentData();
   }
 
   fetchAgentData(): void {
     const token = localStorage.getItem('token');
     if (token) {
-      this.http.get<{agent: any, workers: any[]}>('http://localhost/api/v1/agents',
+      this.http.get<{
+        agent: any;
+        tickets: any[]}>('http://localhost/api/v1/agents',
         { headers: { 'Authorization': `Bearer ${token}` },
           params: { 'includeTickets': 'true', 'includeFiles': 'true' }
         }).subscribe(
         data => {
-          console.log('Server response:', data);
+          //console.log('Server response:', data);
           this.agentData = data.agent;
-          this.workerData = data.workers;
+          data.tickets.forEach(ticket => {
+            if (!this.sortedTicketsByDepartment[ticket.department]) {
+              this.sortedTicketsByDepartment[ticket.department] = [];
+              this.departments.push(ticket.department);
+              this.visibility[ticket.department] = this.agentData && ticket.department === this.agentData.department;
+            }
+            this.sortedTicketsByDepartment[ticket.department].push(ticket);
+          });
           this.sortTicketsByDepartment();
+          console.log('Tickets:', this.sortedTicketsByDepartment);
         },
         error => {
           console.error('Error fetching agent data:', error);
@@ -59,20 +64,41 @@ export class AgentComponent implements OnInit{
   }
 
   sortTicketsByDepartment() {
-    this.workerData.forEach((worker: { tickets: any[]; }) => {
-      worker.tickets.forEach(ticket => {
-        if (!this.sortedTicketsByDepartment[ticket.department]) {
-          this.sortedTicketsByDepartment[ticket.department] = [];
-          this.departments.push(ticket.department);
-          this.visibility[ticket.department] = false;
+    const statusValue = (status: string) => status === 'closed' ? 2 : 1;
+    const priorityValue = (priority: string) => priority === 'high' ? 1 : (priority === 'medium' ? 2 : 3);
+
+    for (let department in this.sortedTicketsByDepartment) {
+      this.sortedTicketsByDepartment[department].sort((a: { status: string; priority: string; }, b: { status: string; priority: string; }) => {
+        if (statusValue(a.status) !== statusValue(b.status)) {
+          return statusValue(a.status) - statusValue(b.status);
         }
-        this.sortedTicketsByDepartment[ticket.department].push(ticket);
+        return priorityValue(a.priority) - priorityValue(b.priority);
       });
-    });
+    }
   }
 
   toggleVisibility(department: string) {
     this.visibility[department] = !this.visibility[department];
+  }
+
+  openTicket(ticketId: number) {
+    let ticketData;
+    for (let department in this.sortedTicketsByDepartment) {
+      let ticket = this.sortedTicketsByDepartment[department].find((ticket: { id: number; }) => ticket.id === ticketId);
+      if (ticket) {
+        ticketData = ticket;
+        break;
+      }
+    }
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.http.post(`http://localhost/api/v1/handleTicketStatus/${ticketId}`, { status: 'opened' }, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).subscribe(response => {
+        console.log(response);
+      });
+    }
+    this.router.navigate(['/ticket_handle', ticketId], { state: { data: ticketData } });
   }
 
   logout(): void {

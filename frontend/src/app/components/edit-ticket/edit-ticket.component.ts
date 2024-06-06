@@ -4,14 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 
-
 interface Ticket {
   id: number;
   department: string;
   message: string;
+  response: string;
   files: any[];
 }
-
 
 @Component({
   selector: 'app-edit-ticket',
@@ -19,7 +18,7 @@ interface Ticket {
   styleUrls: ['./edit-ticket.component.css']
 })
 export class EditTicketComponent implements OnInit {
-  ticket: Ticket = { id: 0, department: '', message: '', files: [] }; // Initialize ticket
+  ticket: Ticket = { id: 0, department: '', message: '',response:'', files: [] }; // Initialize ticket
   files: FileList | null = null;
   newFiles: File[] = [];
 
@@ -38,7 +37,7 @@ export class EditTicketComponent implements OnInit {
         headers: { 'Authorization': `Bearer ${token}` },
         params: { 'includeFiles': 'true' }
       }).subscribe(response => {
-        this.ticket = response.data; // Assign the data property of the response to ticket
+        this.ticket = response.data;
       });
     }
   }
@@ -52,7 +51,6 @@ export class EditTicketComponent implements OnInit {
       this.newFiles.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
-
 
       this.http.post(`http://localhost/api/v1/edit_ticket/${this.ticket.id}`, formData, {
         headers: { 'Authorization': `Bearer ${token}` }

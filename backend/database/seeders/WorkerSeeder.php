@@ -16,21 +16,24 @@ class WorkerSeeder extends Seeder
     public function run(): void
     {
         Worker::factory()
-            ->count(20)
+            ->count(10)
             ->has(
                 Ticket::factory()
-                    ->count(5)
+                    ->count(4)
                     ->state(function (array $attributes, Worker $worker) {
                         return ['worker_id' => $worker->id];
                     })
                     ->has(
                         File::factory()
-                            ->count(3)
+                            ->count(2)
                             ->state(function (array $attributes, Ticket $ticket) {
                                 return ['worker_id' => $ticket->worker_id];
                             })
                     )
             )
             ->create();
+
+
+
     }
 }

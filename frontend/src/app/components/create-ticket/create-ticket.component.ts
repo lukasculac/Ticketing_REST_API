@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-ticket.component.css']
 })
 
-
 export class CreateTicketComponent {
   @ViewChild('ticketForm') ticketForm!: NgForm;
   department!: string;
@@ -19,6 +18,10 @@ export class CreateTicketComponent {
   constructor(private http: HttpClient, private authService: AuthService,private router: Router) {}
 
   submitTicket(): void {
+    if(!this.department || !this.message) {
+      alert('Please fill in all required fields');
+      return;
+    }
     const url = 'http://localhost/api/v1/store_ticket';
     const formData = new FormData();
 

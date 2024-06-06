@@ -112,3 +112,17 @@ td, th {
   background-color: #f2f2f2;
   text-align: left;
 }
+
+.open-ticket-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.open-ticket-button:hover {
+  background-color: #0056b3;
+}

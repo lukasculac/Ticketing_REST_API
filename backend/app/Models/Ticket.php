@@ -13,6 +13,7 @@ class Ticket extends Model
         'worker_id',
         'department',
         'message',
+        'response',
         'status',
         'priority',
         'opened_at',

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { filter } from 'rxjs/operators';
-import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 
 interface ServerResponse {
@@ -21,6 +20,7 @@ interface ServerResponse {
 export class WorkerComponent implements OnInit {
   workerData: any;
   private user: any;
+  hasResponse: boolean | undefined;
 
 
   constructor(private http: HttpClient, private router: Router, private authService: AuthService) {
@@ -47,17 +47,18 @@ export class WorkerComponent implements OnInit {
           console.error('Error fetching worker data:', error);
         }
       );
+      this.hasResponse = this.workerData?.tickets.some((ticket: { response: null; }) => ticket.response !== null);
+
     }
   }
 
   ngOnInit(): void {
-    this.fetchWorkerData();
   }
 
   logout(): void {
     const token = localStorage.getItem('token');
     this.user = { user_type: 'worker' };
-    console.log(token);
+    //console.log(token);
     this.authService.clearToken();
 
     this.http.post('http://localhost/api/v1/logout', this.user, {
@@ -65,7 +66,7 @@ export class WorkerComponent implements OnInit {
     }).subscribe(
       () => {
         localStorage.removeItem('token'); // Remove the token from local storage
-        this.router.navigate(['/login']); // Navigate to login page
+        this.router.navigate(['/login']);
       },
       error => console.error('Error logging out:', error)
     );
@@ -82,16 +83,17 @@ export class WorkerComponent implements OnInit {
   deleteTicket(ticketId: number): void {
     const token = localStorage.getItem('token');
     if (token) {
-      this.http.delete(`http://localhost/api/v1/tickets/${ticketId}`, {
-        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-      }).subscribe(
-        () => {
-          console.log('Ticket deleted');
-          // Remove the deleted ticket from the local data
-          this.workerData.tickets = this.workerData.tickets.filter((ticket: any) => ticket.id !== ticketId);
-        },
-        error => console.error('Error deleting ticket:', error)
-      );
+      if (confirm('Are you sure you want to delete this ticket?')) { // Ask for confirmation
+        this.http.delete(`http://localhost/api/v1/tickets/${ticketId}`, {
+          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        }).subscribe(
+          () => {
+            //console.log('Ticket deleted');
+            this.workerData.tickets = this.workerData.tickets.filter((ticket: any) => ticket.id !== ticketId);
+          },
+          error => console.error('Error deleting ticket:', error)
+        );
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 <form class="ticket-form" #ticketForm="ngForm" (submit)="submitTicket()">
   <div class="form-group">
     <label for="ticket-title" class="form-label">Department:</label>
-    <select id="ticket-title" name="department" class="form-input" [(ngModel)]="department">
+    <select id="ticket-title" name="department" class="form-input" [(ngModel)]="department" required>
       <option value="IT">IT</option>
       <option value="HR">HR</option>
       <option value="Finance">Finance</option>
