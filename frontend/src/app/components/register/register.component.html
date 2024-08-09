@@ -1,0 +1,27 @@
+<div class="login-container">
+  <form (ngSubmit)="onSubmit()" class="login-form">
+    <label for="worker_name">Name:</label>
+    <input type="text" id="worker_name" [(ngModel)]="user.name" name="name" required>
+
+    <label for="worker_email">Email:</label>
+    <input type="email" id="worker_email" [(ngModel)]="user.email" name="email" required>
+
+    <label for="position">Position:</label>
+    <input type="text" id="position" [(ngModel)]="user.position" name="position" required>
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" [(ngModel)]="user.phone" name="phone" required>
+
+    <label for="worker_password">Password:</label>
+    <input type="password" id="worker_password" [(ngModel)]="user.password" name="password" required>
+
+    <label for="worker_confirm_password">Confirm Password:</label>
+    <input type="password" id="worker_confirm_password" [(ngModel)]="user.confirm_password" name="confirm_password" required>
+
+    <div class="button-container">
+      <button type="submit" class="login-button">Register</button>
+    </div>
+  </form>
+
+
+</div>

@@ -1,0 +1,77 @@
+
+
+<!-- Display skeleton loader when workerData is not loaded -->
+<div *ngIf="!agentData; else ticketsTable">
+  <h1>Welcome</h1>
+
+  <!-- Skeleton Loader template -->
+  <div class="skeleton-loader">
+    <!-- Skeleton structure, mimicking the table -->
+    <div class="skeleton-row">
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #ticketsTable>
+  <button (click)="logout()" class="logout-button">Log out</button>
+
+  <h1>Welcome {{agentData?.name}}</h1>
+
+  <div *ngFor="let department of departments">
+    <h2 class="department-header" (click)="toggleVisibility(department)" style="cursor: pointer;">
+      {{ department }}
+      <span *ngIf="!visibility[department]" style="font-style: italic;font-size: smaller" >[show]</span>
+      <span *ngIf="visibility[department]" style="font-style: italic;font-size: smaller">[hide]</span>
+    </h2>
+
+    <div [ngClass]="{'ticket-list-container': true, 'visible': visibility[department]}">
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Department</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Opened at</th>
+          <th>Closed at</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let ticket of sortedTicketsByDepartment[department]">
+          <td>{{ ticket.id }}</td>
+          <td>{{ ticket.department }}</td>
+          <td>{{ ticket.message }}</td>
+          <td>{{ ticket.status }}</td>
+          <td [ngStyle]="{
+              'color': ticket.priority === 'low' ? 'green' :
+              (ticket.priority === 'medium' ? 'yellow' :
+              (ticket.priority === 'high' ? 'red' : 'black'))
+             }" style="text-transform: uppercase;">{{ ticket.priority }}
+          </td>
+          <td *ngIf="ticket.openedAt; else noDate">{{ ticket.openedAt }}</td>
+          <td *ngIf="ticket.closedAt; else noDate">{{ ticket.closedAt }}</td>
+          <td>
+            <button *ngIf="ticket.department === agentData.department"
+                    [disabled]="ticket.status === 'closed'"
+                    (click)="openTicket(ticket.id)"
+                    class="open-ticket-button">
+              {{ ticket.status === 'pending' ? 'Open Ticket' : (ticket.status === 'opened' ? 'View Ticket' : 'Closed') }}
+            </button>
+          </td>
+        </tr>
+        <ng-template #noDate>
+          <td><i>No Date</i></td>
+        </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,23 @@
+<form class="ticket-form" #ticketForm="ngForm" (submit)="submitTicket()">
+  <div class="form-group">
+    <label for="ticket-title" class="form-label">Department:</label>
+    <select id="ticket-title" name="department" class="form-input" [(ngModel)]="department" required>
+      <option value="IT">IT</option>
+      <option value="HR">HR</option>
+      <option value="Finance">Finance</option>
+      <option value="Marketing">Marketing</option>
+      <option value="Sales">Sales</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="message" class="form-label">Message:</label>
+    <textarea id="message" name="message" class="form-input" rows="4" required [(ngModel)]="message"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="file" class="form-label">Attach File:</label>
+    <input type="file" id="file" class="form-input" name="files[]" multiple (change)="onFileChange($event)">  </div>
+
+  <button type="submit" class="submit-button">Submit Ticket</button>
+</form>

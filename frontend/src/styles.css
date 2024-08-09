@@ -1,0 +1,8 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ensure that the body is at least as tall as the viewport */
+  height: auto; /* Allow the body to grow taller if it contains more content */
+  background: linear-gradient(to bottom, rgba(173, 216, 230, 1) 0%, rgba(173, 216, 230, 0) 50%);
+}

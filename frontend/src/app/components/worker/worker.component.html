@@ -1,0 +1,62 @@
+<button (click)="logout()" class="logout-button">Log out</button>
+
+<!-- Display skeleton loader when workerData is not loaded -->
+<div *ngIf="!workerData; else ticketsTable">
+  <h1>Welcome</h1>
+
+  <!-- Skeleton Loader template -->
+  <div class="skeleton-loader">
+    <!-- Skeleton structure, mimicking the table -->
+    <div class="skeleton-row">
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Display tickets table when workerData is loaded -->
+<ng-template #ticketsTable>
+  <h1>Welcome {{workerData?.name}}</h1>
+
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Department</th>
+      <th>Message</th>
+      <th>Files</th>
+      <th>Status</th>
+      <th>Response</th>
+      <th>Opened at</th>
+      <th>Closed at</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let ticket of workerData?.tickets">
+      <td>{{ticket.id}}</td>
+      <td>{{ticket.department}}</td>
+      <td>{{ticket.message}}</td>
+      <td>
+        <ul>
+          <li *ngFor="let file of ticket.files">{{file.fileName}}</li>
+        </ul>
+      </td>
+      <td>{{ticket.status}}</td>
+      <td *ngIf="ticket.response !== null; else noResponse">{{ticket.response}}</td>
+      <td *ngIf="ticket.openedAt; else noDate">{{ticket.openedAt}}</td>
+      <td *ngIf="ticket.closedAt; else noDate">{{ticket.closedAt}}</td>
+      <td><button (click)="editTicket(ticket.id)" class="edit_button">Edit</button></td>
+      <td><button (click)="deleteTicket(ticket.id)" class="delete_button">Delete</button></td>
+    </tr>
+    <ng-template #noDate><td><i>No Date</i></td></ng-template>
+    <ng-template #noResponse><td><i>No Response</i></td></ng-template>
+    </tbody>
+  </table>
+
+  <button (click)="createTicket()" class="create_button">Create New Ticket</button>
+</ng-template>
+

@@ -1,0 +1,128 @@
+.body{
+  height: auto;
+}
+
+
+.logout-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  onHover: background-color 0.3s;
+
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: separate;
+  border-spacing: 10px;
+
+}
+
+td, th {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.edit_button, .create_button{
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  onHover: background-color 0.3s;
+}
+
+.delete_button{
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  onHover: background-color 0.3s;
+}
+
+.skeleton-loader {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.skeleton-cell {
+  height: 20px;
+  margin-bottom: 10px;
+  background: #ccc;
+  animation: loading 1.5s infinite;
+  width: 500px; /* Make the skeleton cell take up the full width */
+}
+
+@keyframes loading {
+  0% {
+    background: #ccc;
+  }
+  50% {
+    background: #ddd;
+  }
+  100% {
+    background: #ccc;
+  }
+}
+
+.department-header {
+  cursor: pointer;
+  margin: 0;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+.ticket-list-container {
+  display: none;
+  overflow-y: auto;
+}
+
+.ticket-list-container.visible {
+  display: block;
+}
+
+.ticket-list-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ticket-list-container th, .ticket-list-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.ticket-list-container th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.open-ticket-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.open-ticket-button:hover {
+  background-color: #0056b3;
+}
